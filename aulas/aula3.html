@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 3 - Migration e Model de Aluno</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1f2933; --muted: #52606d; --border: #d9e2ec;
+    --code-bg: #0f172a; --code-text: #e2e8f0; --accent: #d0021b; --accent-bg: #fdecea;
+    --tip-bg: #eef7ee; --tip-border: #4caf50; --warn-bg: #fff8e1; --warn-border: #f5a623;
+    --step-bg: #f4f6f8; --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0 0 60px 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  header.top { background: linear-gradient(135deg, #b3001b, #d0021b); color: #fff; padding: 36px 24px; margin-bottom: 32px; }
+  header.top .container { padding: 0 24px; }
+  header.top h1 { margin: 0 0 8px 0; font-size: 1.7rem; }
+  header.top p { margin: 4px 0; opacity: 0.95; font-size: 0.98rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+  h2 { font-size: 1.3rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 42px; }
+  h3 { font-size: 1.08rem; margin-top: 26px; }
+  .muted { color: var(--muted); }
+  code { background: #eef1f4; padding: 2px 6px; border-radius: 4px; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px 18px; border-radius: 8px; overflow-x: auto; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.88rem; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  .step { background: var(--step-bg); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 6px; margin: 18px 0; }
+  .step-number { display: inline-block; background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .tip strong { color: #2e7d32; }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .warn strong { color: #b06d00; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: var(--step-bg); }
+  .review-box { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 18px 22px; margin-bottom: 32px; }
+  .review-box h2 { margin-top: 0; border-bottom: none; font-size: 1.1rem; color: #334155; }
+  .review-box ul { margin-bottom: 0; }
+  .quiz { background: var(--quiz-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px 26px; margin-top: 48px; }
+  .quiz h2 { margin-top: 0; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .question { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .question p.q-title { font-weight: 600; margin-bottom: 10px; }
+  .options label { display: block; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.94rem; }
+  .options label:hover { background: #eef1f4; }
+  .options input { margin-right: 8px; }
+  textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 3 — Migration e Model de Aluno</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Migrations</span>
+      <span class="badge">Eloquent</span>
+      <span class="badge">Aula 3 de 6</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="review-box">
+    <h2>🔁 Revisão rápida — Aula 2</h2>
+    <ul>
+      <li>Instalamos o <strong>Jetstream</strong> com <code>composer require laravel/jetstream</code> e <code>php artisan jetstream:install livewire</code>.</li>
+      <li>Vimos que o <strong>Livewire</strong> cria interfaces reativas usando apenas PHP e Blade, sem JavaScript manual.</li>
+      <li>Rodamos <code>npm install</code>, <code>npm run build</code> e <code>php artisan migrate</code> para deixar a autenticação funcionando.</li>
+      <li>Testamos o cadastro e login de um usuário em <code>/register</code>.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px;">Se o login/cadastro não estiver funcionando, resolva isso com o professor antes de seguir — hoje vamos trabalhar dentro do mesmo projeto.</p>
+  </div>
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Hoje começamos a parte principal do projeto: vamos criar a <strong>tabela de alunos</strong> no banco de dados e o <strong>Model</strong> que o Laravel usa para conversar com essa tabela em PHP, usando o Eloquent ORM.</p>
+
+  <h2>📚 Conceitos</h2>
+
+  <h3>Migration</h3>
+  <p>Uma <strong>migration</strong> é um arquivo PHP que descreve uma alteração no banco de dados (criar tabela, adicionar coluna, etc). Elas funcionam como um "histórico versionado" do seu banco — em vez de você criar tabelas manualmente clicando em uma ferramenta gráfica, você escreve código que qualquer colega (ou o professor) pode rodar e chegar exatamente na mesma estrutura de banco.</p>
+
+  <h3>Model (Eloquent)</h3>
+  <p>Um <strong>Model</strong> é uma classe PHP que representa uma tabela do banco. O Laravel usa um ORM chamado <strong>Eloquent</strong>, que permite trabalhar com registros do banco como se fossem objetos PHP comuns — sem escrever SQL manualmente. Por exemplo: <code>Aluno::all()</code> busca todos os alunos, e <code>Aluno::create([...])</code> insere um novo registro.</p>
+
+  <h3>Nossos campos de aluno</h3>
+  <p>O cadastro de alunos vai conter os seguintes campos:</p>
+  <table>
+    <tr><th>Campo</th><th>Tipo</th><th>Observação</th></tr>
+    <tr><td>nome</td><td>string</td><td>Nome completo do aluno</td></tr>
+    <tr><td>email</td><td>string</td><td>Único (não pode repetir)</td></tr>
+    <tr><td>cpf</td><td>string</td><td>Único, 11 dígitos</td></tr>
+    <tr><td>data_nascimento</td><td>date</td><td></td></tr>
+    <tr><td>telefone</td><td>string</td><td></td></tr>
+    <tr><td>curso</td><td>string</td><td>Nome do curso/turma</td></tr>
+  </table>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Gere o Model, a Migration e o Controller de uma só vez</strong>
+    <p>O Artisan tem um atalho que cria os três arquivos juntos:</p>
+    <pre><code>php artisan make:model Aluno -mc</code></pre>
+    <p class="muted"><code>-m</code> gera a migration, <code>-c</code> gera o controller. Vamos usar o controller só a partir da Aula 4.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Edite o arquivo da migration</strong>
+    <p>Abra o arquivo criado em <code>database/migrations/xxxx_xx_xx_create_alunos_table.php</code> e ajuste o método <code>up()</code>:</p>
+    <pre><code>public function up(): void
+{
+    Schema::create('alunos', function (Blueprint $table) {
+        $table->id();
+        $table->string('nome');
+        $table->string('email')->unique();
+        $table->string('cpf', 11)->unique();
+        $table->date('data_nascimento');
+        $table->string('telefone');
+        $table->string('curso');
+        $table->timestamps();
+    });
+}</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Rode a migration</strong>
+    <pre><code>php artisan migrate</code></pre>
+    <p>Isso cria a tabela <code>alunos</code> dentro do arquivo <code>database.sqlite</code>.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Configure o Model <code>Aluno</code></strong>
+    <p>Abra <code>app/Models/Aluno.php</code> e defina quais campos podem ser preenchidos em massa (<code>fillable</code>):</p>
+    <pre><code>class Aluno extends Model
+{
+    protected $fillable = [
+        'nome',
+        'email',
+        'cpf',
+        'data_nascimento',
+        'telefone',
+        'curso',
+    ];
+}</code></pre>
+    <div class="warn">
+      <strong>Por que <code>$fillable</code> é importante:</strong> por segurança, o Eloquent bloqueia por padrão o preenchimento em massa de campos. Sem declarar <code>$fillable</code>, um comando como <code>Aluno::create($request->all())</code> lançaria um erro de "mass assignment".
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Teste o Model no Tinker</strong>
+    <p>O Tinker é um console interativo do Laravel — ótimo para testar código PHP rapidamente:</p>
+    <pre><code>php artisan tinker</code></pre>
+    <p>Dentro do Tinker, crie um aluno de teste:</p>
+    <pre><code>Aluno::create([
+    'nome' => 'Maria Silva',
+    'email' => 'maria@teste.com',
+    'cpf' => '12345678900',
+    'data_nascimento' => '2000-05-10',
+    'telefone' => '65999998888',
+    'curso' => 'Desenvolvimento Web',
+]);</code></pre>
+    <p>Depois confira se foi salvo:</p>
+    <pre><code>Aluno::all();</code></pre>
+    <p>Para sair do Tinker, digite <code>exit</code>.</p>
+  </div>
+
+  <div class="tip">
+    <strong>Dica:</strong> se quiser ver a tabela e os dados de forma visual, ferramentas como <em>DB Browser for SQLite</em> (gratuita) permitem abrir o arquivo <code>database/database.sqlite</code> diretamente.
+  </div>
+
+  <h2>🔭 Prévia do que vem por aí</h2>
+  <p>Na Aula 4 vamos criar as <strong>rotas</strong>, o <strong>Controller</strong> e as <strong>views Blade</strong> para cadastrar e listar alunos pelo navegador — sem precisar mais usar o Tinker.</p>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 3</h2>
+
+    <div class="question">
+      <p class="q-title">1. O que é uma migration no Laravel?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> Um arquivo PHP que descreve uma alteração no banco de dados</label>
+        <label><input type="radio" name="q1"> Um tipo de componente Livewire</label>
+        <label><input type="radio" name="q1"> Um arquivo de configuração do Composer</label>
+        <label><input type="radio" name="q1"> Um script para instalar o Node.js</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Qual comando gera Model, Migration e Controller de uma vez para "Aluno"?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> php artisan make:migration Aluno</label>
+        <label><input type="radio" name="q2"> php artisan make:model Aluno -mc</label>
+        <label><input type="radio" name="q2"> php artisan make:controller Aluno</label>
+        <label><input type="radio" name="q2"> composer require aluno</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. Para que serve a propriedade <code>$fillable</code> no Model?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> Define a cor da tabela no banco</label>
+        <label><input type="radio" name="q3"> Lista quais campos podem ser preenchidos em massa, por segurança</label>
+        <label><input type="radio" name="q3"> Define o nome da tabela no banco</label>
+        <label><input type="radio" name="q3"> Cria automaticamente as rotas do CRUD</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. Qual comando aplica a migration criada, gerando a tabela no banco?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> php artisan migrate</label>
+        <label><input type="radio" name="q4"> php artisan tinker</label>
+        <label><input type="radio" name="q4"> php artisan serve</label>
+        <label><input type="radio" name="q4"> npm run build</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Explique com suas palavras o que é o Eloquent e qual problema ele resolve para quem está programando (compare com escrever SQL manualmente).</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Aula anterior: Jetstream e Livewire</span>
+    <span>Próxima aula: CRUD — Cadastrar e listar →</span>
+  </div>
+
+</div>
+
+</body>
+</html>

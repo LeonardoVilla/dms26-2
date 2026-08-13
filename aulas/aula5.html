@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 5 - CRUD: Editar, Excluir e Validar</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1f2933; --muted: #52606d; --border: #d9e2ec;
+    --code-bg: #0f172a; --code-text: #e2e8f0; --accent: #d0021b; --accent-bg: #fdecea;
+    --tip-bg: #eef7ee; --tip-border: #4caf50; --warn-bg: #fff8e1; --warn-border: #f5a623;
+    --step-bg: #f4f6f8; --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0 0 60px 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  header.top { background: linear-gradient(135deg, #b3001b, #d0021b); color: #fff; padding: 36px 24px; margin-bottom: 32px; }
+  header.top .container { padding: 0 24px; }
+  header.top h1 { margin: 0 0 8px 0; font-size: 1.7rem; }
+  header.top p { margin: 4px 0; opacity: 0.95; font-size: 0.98rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+  h2 { font-size: 1.3rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 42px; }
+  h3 { font-size: 1.08rem; margin-top: 26px; }
+  .muted { color: var(--muted); }
+  code { background: #eef1f4; padding: 2px 6px; border-radius: 4px; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px 18px; border-radius: 8px; overflow-x: auto; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.88rem; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  .step { background: var(--step-bg); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 6px; margin: 18px 0; }
+  .step-number { display: inline-block; background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .tip strong { color: #2e7d32; }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .warn strong { color: #b06d00; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: var(--step-bg); }
+  .review-box { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 18px 22px; margin-bottom: 32px; }
+  .review-box h2 { margin-top: 0; border-bottom: none; font-size: 1.1rem; color: #334155; }
+  .review-box ul { margin-bottom: 0; }
+  .quiz { background: var(--quiz-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px 26px; margin-top: 48px; }
+  .quiz h2 { margin-top: 0; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .question { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .question p.q-title { font-weight: 600; margin-bottom: 10px; }
+  .options label { display: block; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.94rem; }
+  .options label:hover { background: #eef1f4; }
+  .options input { margin-right: 8px; }
+  textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 5 — CRUD: Editando, excluindo e validando</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Update</span>
+      <span class="badge">Delete</span>
+      <span class="badge">Validação</span>
+      <span class="badge">Aula 5 de 6</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="review-box">
+    <h2>🔁 Revisão rápida — Aula 4</h2>
+    <ul>
+      <li>Criamos as rotas <code>alunos.index</code>, <code>alunos.create</code> e <code>alunos.store</code> em <code>routes/web.php</code>.</li>
+      <li>Implementamos <code>index()</code>, <code>create()</code> e <code>store()</code> no <code>AlunoController</code>, com validação básica via <code>$request-&gt;validate()</code>.</li>
+      <li>Criamos as views <code>alunos/index.blade.php</code> (listagem) e <code>alunos/create.blade.php</code> (formulário), usando <code>&lt;x-app-layout&gt;</code>.</li>
+      <li>Cadastramos e listamos alunos direto pelo navegador.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px;">Vamos continuar exatamente nesses mesmos arquivos hoje.</p>
+  </div>
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Hoje completamos as quatro operações do CRUD (Create, Read, Update, Delete) adicionando <strong>edição</strong> e <strong>exclusão</strong> de alunos, e vamos exibir mensagens de erro de validação de forma amigável no formulário.</p>
+
+  <h2>📚 Conceitos</h2>
+
+  <h3>Route Model Binding</h3>
+  <p>O Laravel consegue injetar automaticamente o registro do banco correspondente ao ID da URL, direto como parâmetro do método do Controller. Por exemplo, ao acessar <code>/alunos/3/editar</code>, o Laravel já entrega o objeto <code>Aluno</code> com <code>id = 3</code> pronto, sem você precisar buscar manualmente com <code>Aluno::find($id)</code>.</p>
+
+  <h3>Validação e mensagens de erro</h3>
+  <p>Quando <code>$request->validate()</code> encontra um erro, o Laravel automaticamente redireciona de volta ao formulário anterior, guardando os erros numa variável especial chamada <code>$errors</code>, disponível em toda view.</p>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Adicione as novas rotas</strong>
+    <p>Em <code>routes/web.php</code>, dentro do mesmo grupo <code>auth</code>:</p>
+    <pre><code>Route::get('/alunos/{aluno}/editar', [AlunoController::class, 'edit'])->name('alunos.edit');
+Route::put('/alunos/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
+Route::delete('/alunos/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Implemente os métodos no Controller</strong>
+    <p>Adicione ao <code>AlunoController</code> (repare que o Laravel já entrega o <code>$aluno</code> certo, graças ao Route Model Binding):</p>
+    <pre><code>public function edit(Aluno $aluno)
+{
+    return view('alunos.edit', compact('aluno'));
+}
+
+public function update(Request $request, Aluno $aluno)
+{
+    $dados = $request->validate([
+        'nome' => 'required|string|max:255',
+        'email' => 'required|email|unique:alunos,email,' . $aluno->id,
+        'cpf' => 'required|digits:11|unique:alunos,cpf,' . $aluno->id,
+        'data_nascimento' => 'required|date',
+        'telefone' => 'required|string|max:20',
+        'curso' => 'required|string|max:255',
+    ]);
+
+    $aluno->update($dados);
+
+    return redirect()->route('alunos.index')->with('status', 'Aluno atualizado com sucesso!');
+}
+
+public function destroy(Aluno $aluno)
+{
+    $aluno->delete();
+
+    return redirect()->route('alunos.index')->with('status', 'Aluno removido com sucesso!');
+}</code></pre>
+    <div class="tip">
+      <strong>Por que <code>unique:alunos,email,$aluno->id</code>?</strong> Ao editar, o próprio aluno já possui aquele e-mail cadastrado. Esse terceiro parâmetro diz ao Laravel "ignore o registro com esse ID" ao checar duplicidade — senão o formulário nunca conseguiria salvar sem mudar o e-mail.
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Crie a view de edição</strong>
+    <p>Crie <code>resources/views/alunos/edit.blade.php</code> — praticamente igual ao formulário de criação, mas usando o método <code>PUT</code> e preenchendo os valores atuais:</p>
+    <pre><code>&lt;x-app-layout&gt;
+    &lt;div class="max-w-xl mx-auto py-6"&gt;
+        &lt;h1 class="text-xl font-bold mb-4"&gt;Editar aluno&lt;/h1&gt;
+
+        &lt;form method="POST" action="{{ route('alunos.update', $aluno) }}"&gt;
+            @csrf
+            @method('PUT')
+
+            &lt;label&gt;Nome&lt;/label&gt;
+            &lt;input type="text" name="nome" value="{{ old('nome', $aluno->nome) }}" class="border w-full mb-1"&gt;
+            @error('nome') &lt;p class="text-red-600 text-sm"&gt;{{ $message }}&lt;/p&gt; @enderror
+
+            &lt;label&gt;E-mail&lt;/label&gt;
+            &lt;input type="email" name="email" value="{{ old('email', $aluno->email) }}" class="border w-full mb-1"&gt;
+            @error('email') &lt;p class="text-red-600 text-sm"&gt;{{ $message }}&lt;/p&gt; @enderror
+
+            &lt;label&gt;CPF&lt;/label&gt;
+            &lt;input type="text" name="cpf" value="{{ old('cpf', $aluno->cpf) }}" class="border w-full mb-1"&gt;
+            @error('cpf') &lt;p class="text-red-600 text-sm"&gt;{{ $message }}&lt;/p&gt; @enderror
+
+            &lt;label&gt;Data de nascimento&lt;/label&gt;
+            &lt;input type="date" name="data_nascimento" value="{{ old('data_nascimento', $aluno->data_nascimento) }}" class="border w-full mb-1"&gt;
+
+            &lt;label&gt;Telefone&lt;/label&gt;
+            &lt;input type="text" name="telefone" value="{{ old('telefone', $aluno->telefone) }}" class="border w-full mb-1"&gt;
+
+            &lt;label&gt;Curso&lt;/label&gt;
+            &lt;input type="text" name="curso" value="{{ old('curso', $aluno->curso) }}" class="border w-full mb-4"&gt;
+
+            &lt;button type="submit" class="bg-red-600 text-white px-4 py-2 rounded"&gt;Atualizar&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+&lt;/x-app-layout&gt;</code></pre>
+    <p class="muted">A diretiva <code>@method('PUT')</code> é necessária porque formulários HTML só suportam GET e POST nativamente — o Laravel "finge" o verbo PUT através de um campo oculto.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Adicione os links de editar/excluir e as mensagens de erro na listagem</strong>
+    <p>Atualize <code>alunos/index.blade.php</code>, adicionando uma coluna de ações e o bloco de erros de validação (útil também na tela de criação):</p>
+    <pre><code>@if ($errors->any())
+    &lt;div class="mb-4 text-red-600"&gt;
+        &lt;ul&gt;
+            @foreach ($errors->all() as $erro)
+                &lt;li&gt;{{ $erro }}&lt;/li&gt;
+            @endforeach
+        &lt;/ul&gt;
+    &lt;/div&gt;
+@endif
+
+...
+
+&lt;th class="border p-2"&gt;Ações&lt;/th&gt;
+
+...
+
+&lt;td class="border p-2"&gt;
+    &lt;a href="{{ route('alunos.edit', $aluno) }}" class="text-blue-600 underline"&gt;Editar&lt;/a&gt;
+
+    &lt;form method="POST" action="{{ route('alunos.destroy', $aluno) }}" class="inline" onsubmit="return confirm('Excluir este aluno?')"&gt;
+        @csrf
+        @method('DELETE')
+        &lt;button type="submit" class="text-red-600 underline"&gt;Excluir&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/td&gt;</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Teste o fluxo completo</strong>
+    <p>Cadastre um aluno, edite os dados dele, tente salvar um formulário com campo vazio (veja o erro aparecer) e, por fim, exclua um aluno de teste.</p>
+  </div>
+
+  <div class="warn">
+    <strong>Cuidado ao excluir:</strong> a exclusão que fizemos hoje é definitiva (chamada de "hard delete"). Em sistemas reais, muitas vezes se usa "soft delete" (marca como excluído sem apagar de fato) — mas isso fica fora do escopo do nosso curso introdutório.
+  </div>
+
+  <h2>🔭 Prévia do que vem por aí</h2>
+  <p>Na última aula, vamos transformar a listagem de alunos em um <strong>componente Livewire</strong>, com busca dinâmica em tempo real — sem recarregar a página.</p>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 5</h2>
+
+    <div class="question">
+      <p class="q-title">1. O que é Route Model Binding?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> Um recurso do Livewire para binding de formulários</label>
+        <label><input type="radio" name="q1"> O Laravel injetar automaticamente o registro do banco correspondente ao ID da rota</label>
+        <label><input type="radio" name="q1"> Uma forma de conectar duas tabelas do banco</label>
+        <label><input type="radio" name="q1"> Um tipo de migration</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Por que usamos <code>@method('PUT')</code> no formulário de edição?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> Porque formulários HTML só suportam GET e POST nativamente</label>
+        <label><input type="radio" name="q2"> Porque o SQLite exige isso</label>
+        <label><input type="radio" name="q2"> Porque o Livewire obriga o uso desse método</label>
+        <label><input type="radio" name="q2"> Não tem motivo, é apenas convenção</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. Onde ficam disponíveis as mensagens de erro de validação nas views Blade?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> Na variável $errors</label>
+        <label><input type="radio" name="q3"> No arquivo .env</label>
+        <label><input type="radio" name="q3"> No Model Aluno</label>
+        <label><input type="radio" name="q3"> Na migration</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. Por que a regra de validação do e-mail na edição inclui <code>, $aluno-&gt;id</code> no final?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> Para ignorar o próprio registro ao checar duplicidade de e-mail</label>
+        <label><input type="radio" name="q4"> Para excluir o aluno automaticamente</label>
+        <label><input type="radio" name="q4"> Para gerar um novo ID</label>
+        <label><input type="radio" name="q4"> Isso é opcional e não muda nada</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Explique por que confirmamos a exclusão com <code>onsubmit="return confirm(...)"</code> antes de excluir um aluno. Que problema isso evita para o usuário do sistema?</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Aula anterior: Cadastrar e listar alunos</span>
+    <span>Próxima aula: Livewire aplicado ao CRUD →</span>
+  </div>
+
+</div>
+
+</body>
+</html>

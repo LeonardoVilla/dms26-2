@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 2 - Jetstream e Livewire</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1f2933; --muted: #52606d; --border: #d9e2ec;
+    --code-bg: #0f172a; --code-text: #e2e8f0; --accent: #d0021b; --accent-bg: #fdecea;
+    --tip-bg: #eef7ee; --tip-border: #4caf50; --warn-bg: #fff8e1; --warn-border: #f5a623;
+    --step-bg: #f4f6f8; --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0 0 60px 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  header.top { background: linear-gradient(135deg, #b3001b, #d0021b); color: #fff; padding: 36px 24px; margin-bottom: 32px; }
+  header.top .container { padding: 0 24px; }
+  header.top h1 { margin: 0 0 8px 0; font-size: 1.7rem; }
+  header.top p { margin: 4px 0; opacity: 0.95; font-size: 0.98rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+  h2 { font-size: 1.3rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 42px; }
+  h3 { font-size: 1.08rem; margin-top: 26px; }
+  .muted { color: var(--muted); }
+  code { background: #eef1f4; padding: 2px 6px; border-radius: 4px; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px 18px; border-radius: 8px; overflow-x: auto; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.88rem; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  .step { background: var(--step-bg); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 6px; margin: 18px 0; }
+  .step-number { display: inline-block; background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .tip strong { color: #2e7d32; }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .warn strong { color: #b06d00; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: var(--step-bg); }
+  .review-box { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 18px 22px; margin-bottom: 32px; }
+  .review-box h2 { margin-top: 0; border-bottom: none; font-size: 1.1rem; color: #334155; }
+  .review-box ul { margin-bottom: 0; }
+  .quiz { background: var(--quiz-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px 26px; margin-top: 48px; }
+  .quiz h2 { margin-top: 0; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .question { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .question p.q-title { font-weight: 600; margin-bottom: 10px; }
+  .options label { display: block; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.94rem; }
+  .options label:hover { background: #eef1f4; }
+  .options input { margin-right: 8px; }
+  textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 2 — Autenticação com Jetstream e introdução ao Livewire</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Jetstream</span>
+      <span class="badge">Livewire</span>
+      <span class="badge">Aula 2 de 6</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="review-box">
+    <h2>🔁 Revisão rápida — Aula 1</h2>
+    <ul>
+      <li>Criamos o projeto com <code>composer create-project laravel/laravel cadastro-alunos</code> — sem instalar nada global.</li>
+      <li>Configuramos <code>DB_CONNECTION=sqlite</code> no <code>.env</code> e criamos o arquivo <code>database\database.sqlite</code>.</li>
+      <li>Rodamos <code>php artisan migrate</code> para criar as tabelas básicas.</li>
+      <li>Subimos o projeto com <code>php artisan serve</code> e vimos a tela de boas-vindas em <code>http://127.0.0.1:8000</code>.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px;">Se algum desses passos não funcionou, procure o professor antes de continuar — a Aula 2 depende do projeto já estar criado e rodando.</p>
+  </div>
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Vamos adicionar autenticação completa (cadastro, login, perfil) ao nosso sistema usando o <strong>Jetstream</strong>, e entender o papel do <strong>Livewire</strong> — a tecnologia que vamos usar mais adiante para deixar o cadastro de alunos dinâmico, sem escrever JavaScript manualmente.</p>
+
+  <h2>📚 Conceitos</h2>
+
+  <h3>O que é o Jetstream?</h3>
+  <p>O <strong>Laravel Jetstream</strong> é um pacote oficial que entrega, pronto, um sistema completo de autenticação: login, cadastro, recuperação de senha, verificação de e-mail, edição de perfil, foto de perfil e até autenticação em dois fatores. Sem ele, teríamos que construir cada uma dessas telas manualmente.</p>
+  <p>O Jetstream oferece duas "stacks" (formas de montar a interface):</p>
+  <table>
+    <tr><th>Stack</th><th>Como funciona</th></tr>
+    <tr><td><strong>Livewire</strong> (a que vamos usar)</td><td>Interface reativa em PHP, sem precisar escrever JavaScript separado</td></tr>
+    <tr><td>Inertia</td><td>Interface construída com Vue.js, mais próxima de uma SPA tradicional</td></tr>
+  </table>
+
+  <h3>O que é o Livewire?</h3>
+  <p>O <strong>Livewire</strong> é uma biblioteca que permite criar componentes de interface <em>interativos</em> (que atualizam a tela sem recarregar a página) escrevendo apenas PHP e Blade — sem precisar dominar um framework JavaScript como Vue ou React. Por trás dos panos, ele troca dados com o servidor automaticamente via requisições AJAX.</p>
+  <p>Vamos usá-lo pela primeira vez agora (via Jetstream) e depois, na Aula 6, vamos criar nosso próprio componente Livewire para a listagem de alunos.</p>
+
+  <div class="tip">
+    <strong>Por que isso importa para o nosso CRUD:</strong> mais adiante, quando o usuário digitar um filtro de busca na lista de alunos, o Livewire vai atualizar os resultados na hora, sem precisar apertar um botão "buscar" nem recarregar a página.
+  </div>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Abra o terminal na pasta do projeto</strong>
+    <pre><code>cd cadastro-alunos</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Instale o pacote Jetstream via Composer</strong>
+    <pre><code>composer require laravel/jetstream</code></pre>
+    <p class="muted">Repare que este comando NÃO usa <code>global</code> — ele instala o Jetstream como dependência deste projeto específico, dentro da pasta <code>vendor</code>.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Instale a stack Livewire do Jetstream</strong>
+    <pre><code>php artisan jetstream:install livewire</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Instale as dependências de front-end</strong>
+    <pre><code>npm install
+npm run build</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Rode as novas migrations</strong>
+    <p>O Jetstream adiciona campos e tabelas (como as de "times", se estiver habilitado). Vamos aplicar isso no nosso banco SQLite:</p>
+    <pre><code>php artisan migrate</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span><strong>Suba o projeto e teste o cadastro</strong>
+    <pre><code>php artisan serve</code></pre>
+    <p>Acesse <code>http://127.0.0.1:8000/register</code>, crie um usuário de teste e faça login. Explore a tela de <strong>Profile</strong> — ela já vem pronta, gerada pelo Jetstream/Livewire.</p>
+  </div>
+
+  <div class="warn">
+    <strong>Deu erro ao rodar <code>npm run build</code>?</strong> Confirme que está na pasta correta do projeto (<code>cadastro-alunos</code>) e que o comando <code>npm install</code> terminou sem erros antes. Se precisar, rode <code>npm install</code> novamente.
+  </div>
+
+  <h2>🔭 Prévia do que vem por aí</h2>
+  <p>Na Aula 3, vamos deixar de lado a autenticação por um momento e começar o coração do projeto: a <strong>Migration</strong> e o <strong>Model</strong> de <code>Aluno</code>, que vão guardar nome, e-mail, CPF, data de nascimento, telefone e curso/turma no nosso banco SQLite.</p>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 2</h2>
+
+    <div class="question">
+      <p class="q-title">1. O que o Laravel Jetstream oferece pronto para uso?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> Um sistema completo de autenticação (login, cadastro, perfil)</label>
+        <label><input type="radio" name="q1"> Um banco de dados SQLite pré-configurado</label>
+        <label><input type="radio" name="q1"> Um servidor web em produção</label>
+        <label><input type="radio" name="q1"> Um editor de código integrado</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Qual comando instala a stack Livewire do Jetstream?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> npm install livewire</label>
+        <label><input type="radio" name="q2"> composer create-project livewire</label>
+        <label><input type="radio" name="q2"> php artisan jetstream:install livewire</label>
+        <label><input type="radio" name="q2"> php artisan make:livewire</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. Qual é a principal vantagem do Livewire?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> Permite criar interfaces reativas escrevendo apenas PHP e Blade</label>
+        <label><input type="radio" name="q3"> Substitui completamente a necessidade de um banco de dados</label>
+        <label><input type="radio" name="q3"> É obrigatório para instalar o Composer</label>
+        <label><input type="radio" name="q3"> Serve apenas para estilizar páginas com CSS</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. Depois de instalar o Jetstream, qual comando é necessário para aplicar as novas tabelas ao banco?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> php artisan serve</label>
+        <label><input type="radio" name="q4"> php artisan migrate</label>
+        <label><input type="radio" name="q4"> composer require laravel/jetstream</label>
+        <label><input type="radio" name="q4"> npm run build</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Na sua opinião, por que faz sentido usar um pacote pronto como o Jetstream em vez de programar as telas de login e cadastro do zero? Cite ao menos um risco de programar autenticação manualmente.</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Aula anterior: Instalação sem instalador global</span>
+    <span>Próxima aula: Model e Migration de Aluno →</span>
+  </div>
+
+</div>
+
+</body>
+</html>

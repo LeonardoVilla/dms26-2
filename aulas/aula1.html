@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 1 - Instalação do Laravel sem instalador global</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1f2933;
+    --muted: #52606d;
+    --border: #d9e2ec;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+    --accent: #d0021b;
+    --accent-bg: #fdecea;
+    --tip-bg: #eef7ee;
+    --tip-border: #4caf50;
+    --warn-bg: #fff8e1;
+    --warn-border: #f5a623;
+    --step-bg: #f4f6f8;
+    --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0 0 60px 0;
+  }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  header.top {
+    background: linear-gradient(135deg, #b3001b, #d0021b);
+    color: #fff;
+    padding: 36px 24px;
+    margin-bottom: 32px;
+  }
+  header.top .container { padding: 0 24px; }
+  header.top h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.7rem;
+  }
+  header.top p {
+    margin: 4px 0;
+    opacity: 0.95;
+    font-size: 0.98rem;
+  }
+  .badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+    margin-top: 42px;
+  }
+  h3 {
+    font-size: 1.08rem;
+    margin-top: 26px;
+    color: var(--text);
+  }
+  p { color: var(--text); }
+  .muted { color: var(--muted); }
+  code {
+    background: #eef1f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 16px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+  .step {
+    background: var(--step-bg);
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 18px 0;
+  }
+  .step-number {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .tip {
+    background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 18px 0;
+    font-size: 0.94rem;
+  }
+  .tip strong { color: #2e7d32; }
+  .warn {
+    background: var(--warn-bg);
+    border-left: 4px solid var(--warn-border);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 18px 0;
+    font-size: 0.94rem;
+  }
+  .warn strong { color: #b06d00; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  th {
+    background: var(--step-bg);
+  }
+  .review-box {
+    background: #f1f5f9;
+    border: 1px dashed #94a3b8;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 32px;
+  }
+  .review-box h2 {
+    margin-top: 0;
+    border-bottom: none;
+    font-size: 1.1rem;
+    color: #334155;
+  }
+  .quiz {
+    background: var(--quiz-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 26px;
+    margin-top: 48px;
+  }
+  .quiz h2 {
+    margin-top: 0;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .question {
+    margin-bottom: 26px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .question:last-of-type {
+    border-bottom: none;
+  }
+  .question p.q-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .options label {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.94rem;
+  }
+  .options label:hover {
+    background: #eef1f4;
+  }
+  .options input {
+    margin-right: 8px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 90px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    resize: vertical;
+  }
+  .footer-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  .checklist li { list-style: none; margin-left: -22px; }
+  .checklist li::before { content: "☐ "; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 1 — Criando um projeto Laravel sem instalador global</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Sem privilégios de administrador</span>
+      <span class="badge">Banco: SQLite</span>
+      <span class="badge">Aula 1 de 6</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Hoje vamos criar o esqueleto do nosso projeto final: um <strong>sistema de cadastro de alunos (CRUD)</strong> construído com Laravel, Jetstream, Livewire e SQLite. Ao final desta aula, você terá o projeto rodando localmente no navegador — sem precisar instalar nada como administrador do laboratório.</p>
+
+  <h2>🧩 O que precisa estar instalado na máquina</h2>
+  <p>Diferente do que a documentação oficial recomenda como primeira opção (o instalador global <code>laravel new</code>), vamos usar o Composer diretamente, criando o projeto dentro de uma pasta comum, sem exigir permissão de administrador. Para isso funcionar, a máquina do laboratório precisa ter:</p>
+
+  <table>
+    <tr><th>Recurso</th><th>Para que serve</th><th>Como verificar</th></tr>
+    <tr>
+      <td><strong>PHP</strong> (8.2 ou superior)</td>
+      <td>Linguagem em que o Laravel é escrito e executado</td>
+      <td><code>php -v</code></td>
+    </tr>
+    <tr>
+      <td><strong>Composer</strong></td>
+      <td>Gerenciador de dependências do PHP — baixa o Laravel e suas bibliotecas</td>
+      <td><code>composer -V</code></td>
+    </tr>
+    <tr>
+      <td><strong>Extensão PDO SQLite</strong> do PHP</td>
+      <td>Permite ao Laravel conversar com um banco SQLite (arquivo único, sem servidor)</td>
+      <td><code>php -m</code> (procure por <code>pdo_sqlite</code>)</td>
+    </tr>
+    <tr>
+      <td><strong>Node.js e npm</strong></td>
+      <td>Compilar o CSS/JS do front-end (Jetstream usa isso nas próximas aulas)</td>
+      <td><code>node -v</code> e <code>npm -v</code></td>
+    </tr>
+  </table>
+
+  <div class="warn">
+    <strong>Se algum comando não for reconhecido:</strong> avise o professor antes de tentar instalar qualquer coisa. Em laboratório com restrição de administrador, geralmente PHP/Composer/Node já vêm pré-instalados pela equipe de TI — o bloqueio costuma ser apenas para instalações <em>globais</em> feitas por você, que é justamente o que vamos evitar hoje.
+  </div>
+
+  <h2>🚫 Por que não vamos usar <code>laravel new</code></h2>
+  <p>O comando <code>laravel new</code> depende de um pacote instalado globalmente (<code>composer global require laravel/installer</code>). Em muitos laboratórios, escrever fora da pasta do projeto — mesmo que seja só na pasta do seu usuário — pode ser bloqueado por política do administrador. Para não depender disso, vamos usar o Composer no modo <strong>create-project</strong>, que baixa o Laravel inteiro dentro da própria pasta do projeto, sem tocar em nada fora dela.</p>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Escolha onde vai criar seus projetos</strong>
+    <p>Crie (ou use) uma pasta de trabalho, por exemplo <code>Documentos\laravel-projetos</code>. Abra o terminal (PowerShell ou Prompt de Comando) dentro dela.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Crie o projeto com o Composer</strong>
+    <p>Rode o comando abaixo. Ele vai baixar o Laravel e todas as dependências direto para dentro de uma nova pasta chamada <code>cadastro-alunos</code>:</p>
+    <pre><code>composer create-project laravel/laravel cadastro-alunos</code></pre>
+    <p class="muted">Esse comando pode levar alguns minutos na primeira vez, pois baixa vários pacotes PHP.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Entre na pasta do projeto</strong>
+    <pre><code>cd cadastro-alunos</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Configure o banco de dados SQLite</strong>
+    <p>O Laravel já vem preparado para SQLite. Precisamos apenas criar o arquivo de banco vazio:</p>
+    <pre><code># Windows (PowerShell)
+New-Item -ItemType File -Path database\database.sqlite -Force
+
+# Se estiver usando o Prompt de Comando (cmd), use:
+type nul > database\database.sqlite</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Confirme o arquivo <code>.env</code></strong>
+    <p>Abra o arquivo <code>.env</code> (na raiz do projeto) e verifique se a variável de conexão está assim:</p>
+    <pre><code>DB_CONNECTION=sqlite</code></pre>
+    <p>Pode deixar (ou apagar) as demais linhas <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_DATABASE</code>, <code>DB_USERNAME</code>, <code>DB_PASSWORD</code> — o SQLite não precisa delas, pois usa um arquivo local em vez de um servidor de banco.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span><strong>Rode as migrations padrão</strong>
+    <p>Isso cria as tabelas básicas do Laravel (usuários, sessões, etc.) dentro do seu arquivo SQLite:</p>
+    <pre><code>php artisan migrate</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">7</span><strong>Suba o servidor local</strong>
+    <pre><code>php artisan serve</code></pre>
+    <p>Abra o navegador em <code>http://127.0.0.1:8000</code>. Se aparecer a tela de boas-vindas do Laravel, deu certo! 🎉</p>
+  </div>
+
+  <div class="tip">
+    <strong>Dica:</strong> deixe esse terminal com <code>php artisan serve</code> aberto durante toda a aula. Para rodar novos comandos (como os das próximas aulas), abra um <em>segundo</em> terminal na mesma pasta do projeto.
+  </div>
+
+  <h2>📌 O que é cada coisa que acabamos de usar</h2>
+  <ul>
+    <li><strong>Composer</strong>: gerenciador de pacotes do PHP — parecido com o npm do JavaScript. Ele lê o arquivo <code>composer.json</code> do projeto e baixa tudo que é necessário.</li>
+    <li><strong>Artisan</strong>: a ferramenta de linha de comando do próprio Laravel (<code>php artisan ...</code>). Vamos usá-la o curso inteiro para gerar código e rodar tarefas.</li>
+    <li><strong>Migration</strong>: um "script de versionamento" do banco de dados. Cada migration descreve uma alteração nas tabelas (criar, alterar, remover). Vamos criar a nossa própria migration de alunos na Aula 3.</li>
+    <li><strong>SQLite</strong>: um banco de dados que vive dentro de um único arquivo (<code>database.sqlite</code>), sem precisar instalar nem configurar um servidor de banco separado. Ideal para aprendizado e para ambientes com restrição de instalação.</li>
+  </ul>
+
+  <h2>🔭 Prévia do que vem por aí</h2>
+  <p>Nas próximas aulas vamos evoluir esse projeto até termos um cadastro de alunos completo:</p>
+  <ul class="checklist">
+    <li>Aula 2 — Autenticação com <strong>Jetstream</strong> e introdução ao <strong>Livewire</strong></li>
+    <li>Aula 3 — Model e Migration de <strong>Aluno</strong></li>
+    <li>Aula 4 — CRUD: cadastrar e listar alunos</li>
+    <li>Aula 5 — CRUD: editar e excluir alunos, com validação</li>
+    <li>Aula 6 — Deixando a listagem dinâmica com Livewire</li>
+  </ul>
+
+  <div class="tip">
+    <strong>Antes de encerrar:</strong> não apague a pasta <code>cadastro-alunos</code>! Vamos continuar usando exatamente este projeto até o final do curso.
+  </div>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 1</h2>
+
+    <div class="question">
+      <p class="q-title">1. Qual comando cria um novo projeto Laravel SEM depender de um instalador global?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> laravel new cadastro-alunos</label>
+        <label><input type="radio" name="q1"> composer global require laravel/installer</label>
+        <label><input type="radio" name="q1"> composer create-project laravel/laravel cadastro-alunos</label>
+        <label><input type="radio" name="q1"> npm create laravel-app</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Qual é a função do Composer no ecossistema PHP?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> Compilar arquivos CSS e JavaScript</label>
+        <label><input type="radio" name="q2"> Gerenciar as dependências (pacotes/bibliotecas) do projeto PHP</label>
+        <label><input type="radio" name="q2"> Servir o site em produção</label>
+        <label><input type="radio" name="q2"> Criar o banco de dados automaticamente</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. O que é necessário configurar no arquivo <code>.env</code> para usar SQLite?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> DB_CONNECTION=mysql</label>
+        <label><input type="radio" name="q3"> DB_CONNECTION=sqlite</label>
+        <label><input type="radio" name="q3"> DB_HOST=127.0.0.1</label>
+        <label><input type="radio" name="q3"> DB_PASSWORD=sqlite</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. Para que serve o comando <code>php artisan migrate</code>?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> Inicia o servidor local do Laravel</label>
+        <label><input type="radio" name="q4"> Instala o Composer</label>
+        <label><input type="radio" name="q4"> Aplica as migrations, criando/atualizando as tabelas do banco de dados</label>
+        <label><input type="radio" name="q4"> Compila os arquivos de front-end</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Explique, com suas palavras, por que usar <code>composer create-project</code> em vez do instalador global é uma boa alternativa em um laboratório com restrição de administrador. Cite pelo menos uma vantagem.</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Esta é a primeira aula do curso</span>
+    <span>Próxima aula: Jetstream e Livewire →</span>
+  </div>
+
+</div>
+
+</body>
+</html>

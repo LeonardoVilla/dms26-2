@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 4 - CRUD: Cadastrar e Listar Alunos</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1f2933; --muted: #52606d; --border: #d9e2ec;
+    --code-bg: #0f172a; --code-text: #e2e8f0; --accent: #d0021b; --accent-bg: #fdecea;
+    --tip-bg: #eef7ee; --tip-border: #4caf50; --warn-bg: #fff8e1; --warn-border: #f5a623;
+    --step-bg: #f4f6f8; --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0 0 60px 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  header.top { background: linear-gradient(135deg, #b3001b, #d0021b); color: #fff; padding: 36px 24px; margin-bottom: 32px; }
+  header.top .container { padding: 0 24px; }
+  header.top h1 { margin: 0 0 8px 0; font-size: 1.7rem; }
+  header.top p { margin: 4px 0; opacity: 0.95; font-size: 0.98rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+  h2 { font-size: 1.3rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 42px; }
+  h3 { font-size: 1.08rem; margin-top: 26px; }
+  .muted { color: var(--muted); }
+  code { background: #eef1f4; padding: 2px 6px; border-radius: 4px; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px 18px; border-radius: 8px; overflow-x: auto; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.88rem; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  .step { background: var(--step-bg); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 6px; margin: 18px 0; }
+  .step-number { display: inline-block; background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .tip strong { color: #2e7d32; }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .warn strong { color: #b06d00; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: var(--step-bg); }
+  .review-box { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 18px 22px; margin-bottom: 32px; }
+  .review-box h2 { margin-top: 0; border-bottom: none; font-size: 1.1rem; color: #334155; }
+  .review-box ul { margin-bottom: 0; }
+  .quiz { background: var(--quiz-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px 26px; margin-top: 48px; }
+  .quiz h2 { margin-top: 0; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .question { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .question p.q-title { font-weight: 600; margin-bottom: 10px; }
+  .options label { display: block; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.94rem; }
+  .options label:hover { background: #eef1f4; }
+  .options input { margin-right: 8px; }
+  textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 4 — CRUD: Cadastrando e listando alunos</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Rotas</span>
+      <span class="badge">Blade</span>
+      <span class="badge">Aula 4 de 6</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="review-box">
+    <h2>🔁 Revisão rápida — Aula 3</h2>
+    <ul>
+      <li>Criamos a <strong>migration</strong> da tabela <code>alunos</code> com os campos nome, email, cpf, data_nascimento, telefone e curso.</li>
+      <li>Criamos o <strong>Model</strong> <code>Aluno</code> e definimos <code>$fillable</code> para permitir preenchimento em massa.</li>
+      <li>Testamos a criação de um aluno pelo <code>php artisan tinker</code>.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px;">Precisamos da tabela <code>alunos</code> já criada e do Model funcionando para seguir hoje.</p>
+  </div>
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Hoje vamos sair do Tinker e criar uma interface de verdade: uma <strong>rota</strong> e uma <strong>página Blade</strong> para listar todos os alunos, e um <strong>formulário</strong> para cadastrar novos alunos pelo navegador.</p>
+
+  <h2>📚 Conceitos</h2>
+
+  <h3>Rotas</h3>
+  <p>No Laravel, cada URL do site precisa estar associada a uma <strong>rota</strong>, definida no arquivo <code>routes/web.php</code>. A rota diz: "quando alguém acessar essa URL, execute esse método do Controller".</p>
+
+  <h3>Controller</h3>
+  <p>O <strong>Controller</strong> é a classe que recebe a requisição, conversa com o Model (banco de dados) e decide qual view mostrar. Já criamos o nosso na Aula 3 com a flag <code>-c</code>.</p>
+
+  <h3>Blade Templates</h3>
+  <p>O <strong>Blade</strong> é o motor de templates do Laravel. Ele permite escrever HTML misturado com comandos PHP simplificados, como <code>@foreach</code>, <code>@if</code> e <code>{{ $variavel }}</code>. Arquivos Blade ficam em <code>resources/views</code> e terminam com <code>.blade.php</code>.</p>
+
+  <h3>Layouts e Componentes Blade</h3>
+  <p>Em vez de repetir o mesmo HTML (menu, rodapé, etc.) em cada página, o Blade permite criar <strong>componentes reutilizáveis</strong>. O Jetstream já trouxe um layout de aplicação pronto (<code>x-app-layout</code>) que vamos aproveitar. Um componente é usado assim: <code>&lt;x-app-layout&gt;...conteúdo...&lt;/x-app-layout&gt;</code>. Isso evita duplicar código e mantém a aparência consistente entre as páginas.</p>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Crie as rotas</strong>
+    <p>Abra <code>routes/web.php</code> e adicione, dentro do grupo protegido por autenticação (perto das rotas do dashboard):</p>
+    <pre><code>use App\Http\Controllers\AlunoController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
+    Route::get('/alunos/novo', [AlunoController::class, 'create'])->name('alunos.create');
+    Route::post('/alunos', [AlunoController::class, 'store'])->name('alunos.store');
+});</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Implemente os métodos no Controller</strong>
+    <p>Abra <code>app/Http/Controllers/AlunoController.php</code>:</p>
+    <pre><code>use App\Models\Aluno;
+use Illuminate\Http\Request;
+
+class AlunoController extends Controller
+{
+    public function index()
+    {
+        $alunos = Aluno::latest()->get();
+        return view('alunos.index', compact('alunos'));
+    }
+
+    public function create()
+    {
+        return view('alunos.create');
+    }
+
+    public function store(Request $request)
+    {
+        $dados = $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email|unique:alunos,email',
+            'cpf' => 'required|digits:11|unique:alunos,cpf',
+            'data_nascimento' => 'required|date',
+            'telefone' => 'required|string|max:20',
+            'curso' => 'required|string|max:255',
+        ]);
+
+        Aluno::create($dados);
+
+        return redirect()->route('alunos.index')->with('status', 'Aluno cadastrado com sucesso!');
+    }
+}</code></pre>
+    <p class="muted">Vamos estudar a validação com mais detalhes na Aula 5. Por hoje, ela já garante que nenhum campo obrigatório fique vazio.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Crie a pasta e a view de listagem</strong>
+    <p>Crie o arquivo <code>resources/views/alunos/index.blade.php</code>:</p>
+    <pre><code>&lt;x-app-layout&gt;
+    &lt;div class="max-w-4xl mx-auto py-6"&gt;
+        &lt;h1 class="text-xl font-bold mb-4"&gt;Alunos cadastrados&lt;/h1&gt;
+
+        @if (session('status'))
+            &lt;div class="mb-4 text-green-600"&gt;{{ session('status') }}&lt;/div&gt;
+        @endif
+
+        &lt;a href="{{ route('alunos.create') }}" class="text-blue-600 underline"&gt;+ Novo aluno&lt;/a&gt;
+
+        &lt;table class="w-full mt-4 border"&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th class="border p-2"&gt;Nome&lt;/th&gt;
+                    &lt;th class="border p-2"&gt;E-mail&lt;/th&gt;
+                    &lt;th class="border p-2"&gt;Curso&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                @foreach ($alunos as $aluno)
+                    &lt;tr&gt;
+                        &lt;td class="border p-2"&gt;{{ $aluno-&gt;nome }}&lt;/td&gt;
+                        &lt;td class="border p-2"&gt;{{ $aluno-&gt;email }}&lt;/td&gt;
+                        &lt;td class="border p-2"&gt;{{ $aluno-&gt;curso }}&lt;/td&gt;
+                    &lt;/tr&gt;
+                @endforeach
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/x-app-layout&gt;</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Crie a view do formulário de cadastro</strong>
+    <p>Crie o arquivo <code>resources/views/alunos/create.blade.php</code>:</p>
+    <pre><code>&lt;x-app-layout&gt;
+    &lt;div class="max-w-xl mx-auto py-6"&gt;
+        &lt;h1 class="text-xl font-bold mb-4"&gt;Novo aluno&lt;/h1&gt;
+
+        &lt;form method="POST" action="{{ route('alunos.store') }}"&gt;
+            @csrf
+            &lt;label&gt;Nome&lt;/label&gt;
+            &lt;input type="text" name="nome" value="{{ old('nome') }}" class="border w-full mb-2"&gt;
+
+            &lt;label&gt;E-mail&lt;/label&gt;
+            &lt;input type="email" name="email" value="{{ old('email') }}" class="border w-full mb-2"&gt;
+
+            &lt;label&gt;CPF&lt;/label&gt;
+            &lt;input type="text" name="cpf" value="{{ old('cpf') }}" class="border w-full mb-2"&gt;
+
+            &lt;label&gt;Data de nascimento&lt;/label&gt;
+            &lt;input type="date" name="data_nascimento" value="{{ old('data_nascimento') }}" class="border w-full mb-2"&gt;
+
+            &lt;label&gt;Telefone&lt;/label&gt;
+            &lt;input type="text" name="telefone" value="{{ old('telefone') }}" class="border w-full mb-2"&gt;
+
+            &lt;label&gt;Curso&lt;/label&gt;
+            &lt;input type="text" name="curso" value="{{ old('curso') }}" class="border w-full mb-4"&gt;
+
+            &lt;button type="submit" class="bg-red-600 text-white px-4 py-2 rounded"&gt;Salvar&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+&lt;/x-app-layout&gt;</code></pre>
+    <div class="warn">
+      <strong>Não esqueça o <code>@csrf</code>:</strong> o Laravel exige um token de proteção contra ataques CSRF em todo formulário POST. Sem ele, o envio será bloqueado.
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Teste no navegador</strong>
+    <pre><code>php artisan serve</code></pre>
+    <p>Acesse <code>http://127.0.0.1:8000/alunos</code>, clique em "+ Novo aluno", preencha o formulário e confira se ele aparece na listagem.</p>
+  </div>
+
+  <h2>🔭 Prévia do que vem por aí</h2>
+  <p>Na Aula 5 vamos completar o CRUD com as ações de <strong>editar</strong> e <strong>excluir</strong> um aluno, além de aprender a mostrar mensagens de erro de validação no formulário.</p>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 4</h2>
+
+    <div class="question">
+      <p class="q-title">1. Onde ficam definidas as rotas de um projeto Laravel?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> app/Models</label>
+        <label><input type="radio" name="q1"> routes/web.php</label>
+        <label><input type="radio" name="q1"> database/migrations</label>
+        <label><input type="radio" name="q1"> resources/views</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Qual é a função do Blade no Laravel?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> Gerenciar o banco de dados</label>
+        <label><input type="radio" name="q2"> Ser o motor de templates que mistura HTML com comandos PHP simplificados</label>
+        <label><input type="radio" name="q2"> Instalar pacotes via Composer</label>
+        <label><input type="radio" name="q2"> Validar dados de formulário</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. Por que é necessário incluir <code>@csrf</code> nos formulários?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> Para deixar o formulário mais bonito</label>
+        <label><input type="radio" name="q3"> Para proteger o formulário contra ataques CSRF (envios falsos)</label>
+        <label><input type="radio" name="q3"> Para validar o e-mail automaticamente</label>
+        <label><input type="radio" name="q3"> Para conectar ao banco SQLite</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. O que faz o componente Blade <code>&lt;x-app-layout&gt;</code>?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> Cria uma nova tabela no banco de dados</label>
+        <label><input type="radio" name="q4"> Reaproveita o layout padrão da aplicação (menu, estrutura visual) sem repetir código</label>
+        <label><input type="radio" name="q4"> Executa a migration automaticamente</label>
+        <label><input type="radio" name="q4"> Substitui a necessidade do Controller</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Descreva o caminho que uma requisição percorre desde o clique em "Salvar" no formulário até o aluno aparecer na listagem (cite rota, controller, model e view).</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Aula anterior: Migration e Model de Aluno</span>
+    <span>Próxima aula: Editar, excluir e validar →</span>
+  </div>
+
+</div>
+
+</body>
+</html>

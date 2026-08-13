@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 6 - Livewire aplicado ao CRUD</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1f2933; --muted: #52606d; --border: #d9e2ec;
+    --code-bg: #0f172a; --code-text: #e2e8f0; --accent: #d0021b; --accent-bg: #fdecea;
+    --tip-bg: #eef7ee; --tip-border: #4caf50; --warn-bg: #fff8e1; --warn-border: #f5a623;
+    --step-bg: #f4f6f8; --quiz-bg: #f8f9fb;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0 0 60px 0; }
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  header.top { background: linear-gradient(135deg, #b3001b, #d0021b); color: #fff; padding: 36px 24px; margin-bottom: 32px; }
+  header.top .container { padding: 0 24px; }
+  header.top h1 { margin: 0 0 8px 0; font-size: 1.7rem; }
+  header.top p { margin: 4px 0; opacity: 0.95; font-size: 0.98rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+  h2 { font-size: 1.3rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 42px; }
+  h3 { font-size: 1.08rem; margin-top: 26px; }
+  .muted { color: var(--muted); }
+  code { background: #eef1f4; padding: 2px 6px; border-radius: 4px; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-text); padding: 16px 18px; border-radius: 8px; overflow-x: auto; font-family: "Cascadia Code", "Fira Code", Consolas, monospace; font-size: 0.88rem; line-height: 1.5; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  .step { background: var(--step-bg); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 6px; margin: 18px 0; }
+  .step-number { display: inline-block; background: var(--accent); color: #fff; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.85rem; font-weight: 600; margin-right: 8px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .tip strong { color: #2e7d32; }
+  .warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 14px 18px; border-radius: 6px; margin: 18px 0; font-size: 0.94rem; }
+  .warn strong { color: #b06d00; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: var(--step-bg); }
+  .review-box { background: #f1f5f9; border: 1px dashed #94a3b8; border-radius: 8px; padding: 18px 22px; margin-bottom: 32px; }
+  .review-box h2 { margin-top: 0; border-bottom: none; font-size: 1.1rem; color: #334155; }
+  .review-box ul { margin-bottom: 0; }
+  .recap-box { background: var(--accent-bg); border: 1px solid #f3b9be; border-radius: 8px; padding: 18px 22px; margin: 24px 0; }
+  .recap-box h3 { margin-top: 0; color: var(--accent); }
+  .quiz { background: var(--quiz-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px 26px; margin-top: 48px; }
+  .quiz h2 { margin-top: 0; border-bottom: 2px solid var(--accent); color: var(--accent); }
+  .question { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .question:last-of-type { border-bottom: none; }
+  .question p.q-title { font-weight: 600; margin-bottom: 10px; }
+  .options label { display: block; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.94rem; }
+  .options label:hover { background: #eef1f4; }
+  .options input { margin-right: 8px; }
+  textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" style="display:inline-block;margin:16px 0 0 6vw;color:#fff;opacity:0.9;font-size:0.85rem;text-decoration:none;">&larr; Voltar para o curso</a>
+<header class="top">
+  <div class="container">
+    <h1>Aula 6 — Deixando a listagem dinâmica com Livewire</h1>
+    <p>Disciplina: Desenvolvimento Web com Laravel &middot; Carga horária: 2h</p>
+    <div class="badges">
+      <span class="badge">Livewire</span>
+      <span class="badge">Busca em tempo real</span>
+      <span class="badge">Aula 6 de 6 — Encerramento</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="review-box">
+    <h2>🔁 Revisão rápida — Aula 5</h2>
+    <ul>
+      <li>Criamos as rotas e métodos <code>edit</code>, <code>update</code> e <code>destroy</code> no <code>AlunoController</code>.</li>
+      <li>Usamos <strong>Route Model Binding</strong> para receber o <code>Aluno</code> certo direto no Controller.</li>
+      <li>Exibimos erros de validação com <code>$errors</code> e a diretiva <code>@error</code>.</li>
+      <li>Finalizamos o CRUD completo: criar, listar, editar e excluir alunos.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px;">Hoje vamos evoluir a tela de listagem que já está funcionando — sem mexer no restante do CRUD.</p>
+  </div>
+
+  <h2>🎯 Objetivo da aula</h2>
+  <p>Última aula do curso! Vamos substituir a listagem estática de alunos por um <strong>componente Livewire</strong>, com um campo de busca que filtra os resultados <em>em tempo real</em>, sem recarregar a página — usando o que aprendemos sobre Livewire lá na Aula 2.</p>
+
+  <h2>📚 Conceito: como o Livewire atualiza a tela sozinho</h2>
+  <p>Um componente Livewire tem duas partes: uma classe PHP (com propriedades e métodos) e uma view Blade. Quando uma propriedade pública da classe muda — por exemplo, o texto digitado em um campo com <code>wire:model</code> — o Livewire reenvia essa informação ao servidor automaticamente, reprocessa a view e atualiza só o trecho necessário da página, sem recarregar tudo.</p>
+
+  <h2>🛠️ Passo a passo</h2>
+
+  <div class="step">
+    <span class="step-number">1</span><strong>Gere o componente Livewire</strong>
+    <pre><code>php artisan make:livewire ListaAlunos</code></pre>
+    <p class="muted">Isso cria dois arquivos: <code>app/Livewire/ListaAlunos.php</code> (classe) e <code>resources/views/livewire/lista-alunos.blade.php</code> (view).</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span><strong>Implemente a classe do componente</strong>
+    <p>Edite <code>app/Livewire/ListaAlunos.php</code>:</p>
+    <pre><code>namespace App\Livewire;
+
+use App\Models\Aluno;
+use Livewire\Component;
+
+class ListaAlunos extends Component
+{
+    public string $busca = '';
+
+    public function delete($id)
+    {
+        Aluno::findOrFail($id)->delete();
+    }
+
+    public function render()
+    {
+        $alunos = Aluno::query()
+            ->when($this->busca, function ($query) {
+                $query->where('nome', 'like', '%' . $this->busca . '%')
+                      ->orWhere('curso', 'like', '%' . $this->busca . '%');
+            })
+            ->latest()
+            ->get();
+
+        return view('livewire.lista-alunos', compact('alunos'));
+    }
+}</code></pre>
+    <p class="muted"><code>when()</code> só aplica o filtro <code>where</code> se o campo <code>busca</code> não estiver vazio — assim, sem digitar nada, a lista completa aparece normalmente.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span><strong>Implemente a view do componente</strong>
+    <p>Edite <code>resources/views/livewire/lista-alunos.blade.php</code>:</p>
+    <pre><code>&lt;div&gt;
+    &lt;input
+        type="text"
+        wire:model.live="busca"
+        placeholder="Buscar por nome ou curso..."
+        class="border w-full mb-4 p-2"
+    &gt;
+
+    &lt;table class="w-full border"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th class="border p-2"&gt;Nome&lt;/th&gt;
+                &lt;th class="border p-2"&gt;E-mail&lt;/th&gt;
+                &lt;th class="border p-2"&gt;Curso&lt;/th&gt;
+                &lt;th class="border p-2"&gt;Ações&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @forelse ($alunos as $aluno)
+                &lt;tr wire:key="aluno-{{ $aluno->id }}"&gt;
+                    &lt;td class="border p-2"&gt;{{ $aluno->nome }}&lt;/td&gt;
+                    &lt;td class="border p-2"&gt;{{ $aluno->email }}&lt;/td&gt;
+                    &lt;td class="border p-2"&gt;{{ $aluno->curso }}&lt;/td&gt;
+                    &lt;td class="border p-2"&gt;
+                        &lt;a href="{{ route('alunos.edit', $aluno) }}" class="text-blue-600 underline"&gt;Editar&lt;/a&gt;
+                        &lt;button
+                            wire:click="delete({{ $aluno->id }})"
+                            wire:confirm="Excluir este aluno?"
+                            class="text-red-600 underline"
+                        &gt;Excluir&lt;/button&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            @empty
+                &lt;tr&gt;&lt;td colspan="4" class="border p-2 text-center"&gt;Nenhum aluno encontrado&lt;/td&gt;&lt;/tr&gt;
+            @endforelse
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+    <p class="muted"><code>wire:model.live</code> envia cada tecla digitada ao servidor em tempo real. <code>wire:click</code> chama um método PHP do componente sem escrever JavaScript. <code>wire:confirm</code> mostra uma confirmação nativa antes de executar a ação.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span><strong>Use o componente na página de listagem</strong>
+    <p>Substitua o conteúdo da tabela em <code>resources/views/alunos/index.blade.php</code> pela chamada do componente:</p>
+    <pre><code>&lt;x-app-layout&gt;
+    &lt;div class="max-w-4xl mx-auto py-6"&gt;
+        &lt;h1 class="text-xl font-bold mb-4"&gt;Alunos cadastrados&lt;/h1&gt;
+
+        @if (session('status'))
+            &lt;div class="mb-4 text-green-600"&gt;{{ session('status') }}&lt;/div&gt;
+        @endif
+
+        &lt;a href="{{ route('alunos.create') }}" class="text-blue-600 underline"&gt;+ Novo aluno&lt;/a&gt;
+
+        &lt;div class="mt-4"&gt;
+            @livewire('lista-alunos')
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/x-app-layout&gt;</code></pre>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span><strong>Teste a busca dinâmica</strong>
+    <pre><code>php artisan serve</code></pre>
+    <p>Acesse <code>/alunos</code> e digite no campo de busca. Observe que a tabela filtra os resultados sem a página recarregar — isso é o Livewire em ação.</p>
+  </div>
+
+  <div class="tip">
+    <strong>Fim do curso:</strong> parabéns! Você construiu, do zero, um projeto Laravel completo — instalação sem privilégios de administrador, autenticação com Jetstream, banco SQLite, CRUD completo e uma interface dinâmica com Livewire.
+  </div>
+
+  <div class="recap-box">
+    <h3>📋 Recapitulando o curso inteiro</h3>
+    <ul>
+      <li><strong>Aula 1</strong> — Instalação do projeto sem instalador global, configuração do SQLite</li>
+      <li><strong>Aula 2</strong> — Autenticação com Jetstream e introdução ao Livewire</li>
+      <li><strong>Aula 3</strong> — Migration e Model do Aluno (Eloquent)</li>
+      <li><strong>Aula 4</strong> — CRUD: rotas, Controller, Blade — cadastrar e listar</li>
+      <li><strong>Aula 5</strong> — CRUD: editar, excluir e validação de formulários</li>
+      <li><strong>Aula 6</strong> — Componente Livewire com busca em tempo real</li>
+    </ul>
+  </div>
+
+  <section class="quiz">
+    <h2>📝 Questionário — Aula 6</h2>
+
+    <div class="question">
+      <p class="q-title">1. Qual comando cria um novo componente Livewire?</p>
+      <div class="options">
+        <label><input type="radio" name="q1"> php artisan make:model</label>
+        <label><input type="radio" name="q1"> php artisan make:livewire ListaAlunos</label>
+        <label><input type="radio" name="q1"> php artisan make:migration</label>
+        <label><input type="radio" name="q1"> composer require livewire</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">2. Para que serve o atributo <code>wire:model.live</code> em um campo de input?</p>
+      <div class="options">
+        <label><input type="radio" name="q2"> Envia o valor digitado ao servidor em tempo real, atualizando a propriedade do componente</label>
+        <label><input type="radio" name="q2"> Aplica uma máscara de formatação ao campo</label>
+        <label><input type="radio" name="q2"> Valida o CPF automaticamente</label>
+        <label><input type="radio" name="q2"> Cria uma nova rota</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">3. O que faz o método <code>when()</code> usado na consulta Eloquent do componente?</p>
+      <div class="options">
+        <label><input type="radio" name="q3"> Aplica uma condição de filtro somente se a variável informada não estiver vazia/falsa</label>
+        <label><input type="radio" name="q3"> Cria uma nova tabela no banco</label>
+        <label><input type="radio" name="q3"> Ordena os resultados por data</label>
+        <label><input type="radio" name="q3"> Executa a migration automaticamente</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">4. Como o método <code>delete($id)</code> do componente Livewire é chamado a partir do botão "Excluir" na view?</p>
+      <div class="options">
+        <label><input type="radio" name="q4"> Por um formulário POST com @csrf</label>
+        <label><input type="radio" name="q4"> Pelo atributo wire:click="delete($aluno-&gt;id)"</label>
+        <label><input type="radio" name="q4"> Por uma rota DELETE separada</label>
+        <label><input type="radio" name="q4"> Automaticamente ao carregar a página</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p class="q-title">5. (Dissertativa) Compare a experiência de excluir um aluno na Aula 5 (formulário com POST + @method('DELETE')) com a da Aula 6 (wire:click no Livewire). Qual abordagem você achou mais simples de implementar e por quê?</p>
+      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <span>← Aula anterior: Editar, excluir e validar</span>
+    <span>Curso concluído 🎓</span>
+  </div>
+
+</div>
+
+</body>
+</html>
