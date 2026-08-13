@@ -50,6 +50,21 @@
   .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
   ul, ol { padding-left: 22px; }
   li { margin-bottom: 6px; }
+  .correct-btn { display: block; margin: 8px auto 0; background: var(--accent); color: #fff; border: none; padding: 12px 32px; border-radius: 8px; font-size: 0.98rem; font-weight: 600; cursor: pointer; }
+  .correct-btn:hover { opacity: 0.9; }
+  .q-feedback { margin: 10px 0 0; font-size: 0.88rem; font-weight: 600; min-height: 1.2em; }
+  .feedback-correct { color: #2e7d32; }
+  .feedback-wrong { color: #c62828; }
+  .feedback-missing { color: #b06d00; }
+  .options label.correct-option { background: #e6f4ea; outline: 1px solid #4caf50; }
+  .options label.wrong-option { background: #fdecea; outline: 1px solid #e53935; }
+  .quiz-resultado { margin-top: 24px; padding: 18px 22px; border-radius: 8px; font-size: 0.98rem; }
+  .quiz-resultado strong { font-size: 1.15rem; display: block; margin-bottom: 6px; }
+  .quiz-resultado p { margin: 6px 0 0; }
+  .quiz-resultado .dissertativa-nota { font-size: 0.86rem; color: var(--muted); }
+  .aviso-baixo { background: #fdecea; border: 1px solid #e57373; }
+  .aviso-medio { background: #fff8e1; border: 1px solid #f5a623; }
+  .aviso-alto { background: #eef7ee; border: 1px solid #4caf50; }
 </style>
 </head>
 <body>
@@ -221,51 +236,127 @@ public function destroy(Aluno $aluno)
   <section class="quiz">
     <h2>📝 Questionário — Aula 5</h2>
 
-    <div class="question">
+    <div class="question" data-question="q1" data-correct="1">
       <p class="q-title">1. O que é Route Model Binding?</p>
       <div class="options">
-        <label><input type="radio" name="q1"> Um recurso do Livewire para binding de formulários</label>
-        <label><input type="radio" name="q1"> O Laravel injetar automaticamente o registro do banco correspondente ao ID da rota</label>
-        <label><input type="radio" name="q1"> Uma forma de conectar duas tabelas do banco</label>
-        <label><input type="radio" name="q1"> Um tipo de migration</label>
+        <label><input type="radio" name="q1" value="0"> Um recurso do Livewire para binding de formulários</label>
+        <label><input type="radio" name="q1" value="1"> O Laravel injetar automaticamente o registro do banco correspondente ao ID da rota</label>
+        <label><input type="radio" name="q1" value="2"> Uma forma de conectar duas tabelas do banco</label>
+        <label><input type="radio" name="q1" value="3"> Um tipo de migration</label>
       </div>
+      <p class="q-feedback"></p>
     </div>
 
-    <div class="question">
+    <div class="question" data-question="q2" data-correct="0">
       <p class="q-title">2. Por que usamos <code>@method('PUT')</code> no formulário de edição?</p>
       <div class="options">
-        <label><input type="radio" name="q2"> Porque formulários HTML só suportam GET e POST nativamente</label>
-        <label><input type="radio" name="q2"> Porque o SQLite exige isso</label>
-        <label><input type="radio" name="q2"> Porque o Livewire obriga o uso desse método</label>
-        <label><input type="radio" name="q2"> Não tem motivo, é apenas convenção</label>
+        <label><input type="radio" name="q2" value="0"> Porque formulários HTML só suportam GET e POST nativamente</label>
+        <label><input type="radio" name="q2" value="1"> Porque o SQLite exige isso</label>
+        <label><input type="radio" name="q2" value="2"> Porque o Livewire obriga o uso desse método</label>
+        <label><input type="radio" name="q2" value="3"> Não tem motivo, é apenas convenção</label>
       </div>
+      <p class="q-feedback"></p>
     </div>
 
-    <div class="question">
+    <div class="question" data-question="q3" data-correct="0">
       <p class="q-title">3. Onde ficam disponíveis as mensagens de erro de validação nas views Blade?</p>
       <div class="options">
-        <label><input type="radio" name="q3"> Na variável $errors</label>
-        <label><input type="radio" name="q3"> No arquivo .env</label>
-        <label><input type="radio" name="q3"> No Model Aluno</label>
-        <label><input type="radio" name="q3"> Na migration</label>
+        <label><input type="radio" name="q3" value="0"> Na variável $errors</label>
+        <label><input type="radio" name="q3" value="1"> No arquivo .env</label>
+        <label><input type="radio" name="q3" value="2"> No Model Aluno</label>
+        <label><input type="radio" name="q3" value="3"> Na migration</label>
       </div>
+      <p class="q-feedback"></p>
     </div>
 
-    <div class="question">
+    <div class="question" data-question="q4" data-correct="0">
       <p class="q-title">4. Por que a regra de validação do e-mail na edição inclui <code>, $aluno-&gt;id</code> no final?</p>
       <div class="options">
-        <label><input type="radio" name="q4"> Para ignorar o próprio registro ao checar duplicidade de e-mail</label>
-        <label><input type="radio" name="q4"> Para excluir o aluno automaticamente</label>
-        <label><input type="radio" name="q4"> Para gerar um novo ID</label>
-        <label><input type="radio" name="q4"> Isso é opcional e não muda nada</label>
+        <label><input type="radio" name="q4" value="0"> Para ignorar o próprio registro ao checar duplicidade de e-mail</label>
+        <label><input type="radio" name="q4" value="1"> Para excluir o aluno automaticamente</label>
+        <label><input type="radio" name="q4" value="2"> Para gerar um novo ID</label>
+        <label><input type="radio" name="q4" value="3"> Isso é opcional e não muda nada</label>
       </div>
+      <p class="q-feedback"></p>
     </div>
 
     <div class="question">
       <p class="q-title">5. (Dissertativa) Explique por que confirmamos a exclusão com <code>onsubmit="return confirm(...)"</code> antes de excluir um aluno. Que problema isso evita para o usuário do sistema?</p>
-      <textarea placeholder="Digite sua resposta aqui..."></textarea>
+      <textarea placeholder="Digite sua resposta aqui..." id="q5-text"></textarea>
     </div>
+
+    <button type="button" class="correct-btn" onclick="corrigirQuestionario()">Corrigir</button>
+    <div id="quiz-resultado" class="quiz-resultado" style="display:none;"></div>
   </section>
+
+  <script>
+    function corrigirQuestionario() {
+      const perguntas = document.querySelectorAll('.question[data-question]');
+      let acertos = 0;
+
+      perguntas.forEach(function (pergunta) {
+        const nome = pergunta.getAttribute('data-question');
+        const correta = pergunta.getAttribute('data-correct');
+        const selecionado = pergunta.querySelector('input[name="' + nome + '"]:checked');
+        const feedback = pergunta.querySelector('.q-feedback');
+        const labels = pergunta.querySelectorAll('.options label');
+
+        labels.forEach(function (label) {
+          label.classList.remove('correct-option', 'wrong-option');
+          const input = label.querySelector('input');
+          if (input.value === correta) {
+            label.classList.add('correct-option');
+          }
+        });
+
+        if (!selecionado) {
+          feedback.textContent = '⚠️ Você não respondeu esta questão.';
+          feedback.className = 'q-feedback feedback-missing';
+          return;
+        }
+
+        if (selecionado.value === correta) {
+          acertos++;
+          feedback.textContent = '✔️ Você acertou!';
+          feedback.className = 'q-feedback feedback-correct';
+        } else {
+          selecionado.closest('label').classList.add('wrong-option');
+          feedback.textContent = '❌ Resposta incorreta. A alternativa correta está destacada em verde.';
+          feedback.className = 'q-feedback feedback-wrong';
+        }
+      });
+
+      const nota = (acertos / perguntas.length) * 10;
+      const notaFormatada = nota.toFixed(1).replace('.0', '');
+
+      let aviso, cor;
+      if (nota < 5) {
+        aviso = '📕 Reveja o conteúdo da aula antes de continuar.';
+        cor = 'aviso-baixo';
+      } else if (nota < 8) {
+        aviso = '📙 Bom, mas revise alguns pontos antes de seguir.';
+        cor = 'aviso-medio';
+      } else {
+        aviso = '📗 Muito bem! Você já pode seguir para a próxima aula.';
+        cor = 'aviso-alto';
+      }
+
+      const textoDissertativa = document.getElementById('q5-text').value.trim();
+      const statusDissertativa = textoDissertativa
+        ? 'A questão dissertativa foi registrada e será avaliada manualmente pelo professor.'
+        : 'Você ainda não respondeu a questão dissertativa — ela também será avaliada pelo professor.';
+
+      const resultado = document.getElementById('quiz-resultado');
+      resultado.className = 'quiz-resultado ' + cor;
+      resultado.style.display = 'block';
+      resultado.innerHTML =
+        '<strong>Nota: ' + notaFormatada + ' / 10</strong> (' + acertos + ' de ' + perguntas.length + ' questões objetivas corretas)' +
+        '<p>' + aviso + '</p>' +
+        '<p class="dissertativa-nota">📝 ' + statusDissertativa + '</p>';
+
+      resultado.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
 
   <div class="footer-nav">
     <span>← Aula anterior: Cadastrar e listar alunos</span>
