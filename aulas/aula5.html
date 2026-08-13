@@ -48,6 +48,8 @@
   .options input { margin-right: 8px; }
   textarea { width: 100%; min-height: 90px; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; }
   .footer-nav { display: flex; justify-content: space-between; margin-top: 40px; font-size: 0.9rem; color: var(--muted); }
+  .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .footer-nav a:hover { text-decoration: underline; }
   ul, ol { padding-left: 22px; }
   li { margin-bottom: 6px; }
   .correct-btn { display: block; margin: 8px auto 0; background: var(--accent); color: #fff; border: none; padding: 12px 32px; border-radius: 8px; font-size: 0.98rem; font-weight: 600; cursor: pointer; }
@@ -359,8 +361,8 @@ public function destroy(Aluno $aluno)
   </script>
 
   <div class="footer-nav">
-    <span>← Aula anterior: Cadastrar e listar alunos</span>
-    <span>Próxima aula: Livewire aplicado ao CRUD →</span>
+    <a href="aula4.html">← Aula anterior: Cadastrar e listar alunos</a>
+    <a href="aula6.html">Próxima aula: Livewire aplicado ao CRUD →</a>
   </div>
 
 </div>
